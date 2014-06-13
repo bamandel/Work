@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Smart Watch App</string>
+    <string name="title_activity_pic_vid">PicVidActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="pic_question">Picture?</string>
+    <string name="vid_question">Video?</string>
+    <string name="before_question">Before?</string>
+    <string name="after_question">After?</string>
+    <string name="yes_answer">Yes</string>
+    <string name="no_answer">No</string>
+    <string name="finished_question">Finished?</string>
+    <string name="title_activity_video_camera">VideoCamera</string>
+    <string name="title_activity_picture_camera">PictureCameraActivity</string>
+    <string name="title_activity_finished">FinishedActivity</string>
+    <string name="title_activity_camera_surface">CameraSurfaceActivity</string>
+    <string name="title_activity_sound_record">SoundRecordActivity</string>
+    <string name="title_activity_blelist">BLEListActivity</string>
+
+</resources>
