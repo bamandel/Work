@@ -3,25 +3,21 @@ package com.example.smartwatchapp;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
+import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.speech.RecognitionListener;
-import android.speech.RecognizerIntent;
-import android.speech.SpeechRecognizer;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -29,8 +25,7 @@ import android.widget.TextView;
 public class SoundRecordActivity extends Activity implements OnClickListener{
 	
 	private static ImageView record;
-	private static TextView next;
-	private static EditText sentence;
+	private static TextView finish;
 	private static ProgressBar progressBar;
 	
 	private boolean isClicked = false;
@@ -40,14 +35,9 @@ public class SoundRecordActivity extends Activity implements OnClickListener{
 	
 	private Handler handler;
 	
-	private SpeechRecognizer recognizer;
-	private RecognitionListener listener;
-	
-	private String phrase = "";
-	
-	private String beforeAfter;
-	
 	private File audio;
+	
+	private MediaRecorder recorder = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +45,6 @@ public class SoundRecordActivity extends Activity implements OnClickListener{
 		setContentView(R.layout.activity_sound_record);
 		
 		handler = new Handler();
-		beforeAfter = getIntent().getStringExtra("before after");
 		
 		if (savedInstanceState == null) {
 			getFragmentManager().beginTransaction()
@@ -78,10 +67,8 @@ public class SoundRecordActivity extends Activity implements OnClickListener{
 			record = (ImageView) rootView.findViewById(R.id.ivRecord);
 			record.setOnClickListener((OnClickListener) getActivity());
 			
-			next = (TextView) rootView.findViewById(R.id.tvNext);
-			next.setOnClickListener((OnClickListener) getActivity());
-			
-			sentence = (EditText) rootView.findViewById(R.id.etPhrase);
+			finish = (TextView) rootView.findViewById(R.id.tvFinish);
+			finish.setOnClickListener((OnClickListener) getActivity());
 			
 			progressBar = (ProgressBar) rootView.findViewById(R.id.pbTimer);
 			
@@ -93,7 +80,6 @@ public class SoundRecordActivity extends Activity implements OnClickListener{
 	public void onClick(View v) {
 		switch(v.getId()) {
 		case R.id.ivRecord: {
-			record();
 			time = System.currentTimeMillis();
 			new Thread(new Runnable() {
 				@Override
@@ -111,7 +97,7 @@ public class SoundRecordActivity extends Activity implements OnClickListener{
 								@Override
 								public void run() {
 									record.setImageResource(R.drawable.record);
-									recognizer.stopListening();
+									record(false);
 									isClicked = false;
 								}
 							});
@@ -125,18 +111,25 @@ public class SoundRecordActivity extends Activity implements OnClickListener{
 					}
 				}
 			}).start();
+			record(isClicked);
 			break;
 		}
-		case R.id.tvNext: {
-			startActivityForResult(new Intent(this, FinishedActivity.class)
-				.putExtra("audio file", Uri.fromFile(audio))
-				.putExtra("identifier", "audio")
-				, FinishedActivity.MEDIA_TYPE_AUDIO);
-			break;
+		case R.id.tvFinish: {
+			//Write data here
+			audio = getOutputMediaFile(FinishedActivity.MEDIA_TYPE_AUDIO);
+			
+			Intent intent = new Intent(this, FinishedActivity.class);
+			intent.putExtra("identifier", "audio");
+			if(audio != null)
+				intent.putExtra("audio file", Uri.fromFile(audio));
+			setResult(RESULT_OK, intent );
+			finish();
+			return;
 		}
 		}
 	}
 	
+	/*
 	private void record() {
 		Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
@@ -169,8 +162,7 @@ public class SoundRecordActivity extends Activity implements OnClickListener{
 						log("No results");
 					} else {
 						log("found voice results");
-						phrase = voiceResults.get(temp);
-						sentence.setText(phrase);
+						//Store them in a file
 					}
 				}
 
@@ -222,16 +214,59 @@ public class SoundRecordActivity extends Activity implements OnClickListener{
 			log("No Speech Recognizer available");
 		}
 	}
+*/
+	
+	private void record(boolean start) {
+		if(start && !isClicked) {
+			record.setImageResource(R.drawable.record_pressed);
+			isClicked = true;
+			startRecording();
+		} else {
+			record.setImageResource(R.drawable.record);
+			isClicked = false;
+			stopRecording();
+		}
+	}
+	
+	private void startRecording() {
+		recorder = new MediaRecorder();
+		recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+		recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+		
+		audio = getOutputMediaFile(CameraSurfaceActivity.MEDIA_TYPE_AUDIO);
+		recorder.setOutputFile(audio.toString());
+		
+		recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+		
+		try {
+			recorder.prepare();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		recorder.start();
+	}
+	
+	private void stopRecording() {
+		recorder.stop();
+		recorder.release();
+		recorder = null;
+	}
 	
 	private int startProgressBar() {
 		long curTime = System.currentTimeMillis();
-		
+		log("Increment");
 		return (int) ((curTime - time) / 100);
 	}
 	
 	@Override
 	protected void onPause() {
 		super.onPause();
+		
+		if(recorder != null) {
+			recorder.release();
+			recorder = null;
+		}
 	}
 	
 	private File getOutputMediaFile(int type) {
@@ -240,7 +275,7 @@ public class SoundRecordActivity extends Activity implements OnClickListener{
 		if (type == FinishedActivity.MEDIA_TYPE_AUDIO) {
 			log("saving audio file");
 			try {
-				return File.createTempFile(File.separator + beforeAfter + "_AUD_" + timeStamp, ".wav");
+				return File.createTempFile(File.separator + "_AUD_" + timeStamp, ".wav");
 			} catch (IOException e) {
 				log("Audio saving IOException thrown");
 				e.printStackTrace();
@@ -248,35 +283,6 @@ public class SoundRecordActivity extends Activity implements OnClickListener{
 		}
 		
 		return null;
-	}
-	
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		
-		if(resultCode == RESULT_OK && data != null) {
-			if (requestCode == FinishedActivity.MEDIA_TYPE_AUDIO) {
-				if (data.getStringExtra("response").equals("yes")) {
-					// Store data and finish
-					log("rsult OK Yes entered");
-
-					/*
-					 * Use Bluetooth here to send mediaFile to Phone
-					 */
-					
-					audio = getOutputMediaFile(FinishedActivity.MEDIA_TYPE_AUDIO);
-					
-					startActivity(new Intent(this, PicVidActivity.class)
-							.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-				}
-				if (data.getStringExtra("response").equals("no")) {
-					log("result OK No entered");
-				}
-			}
-		}
-		else {
-			log("result cancelled");
-		}
 	}
 	
 	private static void log(String data) {

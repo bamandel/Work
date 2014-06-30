@@ -1,0 +1,25 @@
+Smart Watch Application
+
+Requirements:
+
+-Testing
+-OpenCV image Processing
+-Implement Picture capturing
+
+Bugs:
+
+-Occasional really slow start-up
+-Application doesn't start correctly and crashes
+-Bluetooth doesn't always connect
+-Bluetooth sometimes loses connection when watch sleeps
+
+Performance/Memory Issues:
+
+-Start-up is slow
+-Videos are large
+-Sensor data file is about 730 bytes per second (about 2.5 mb an hour)
+-Bluetooth power consumption?
+
+WARNING: If handler is used incorrectly memory leaks will occur.
+leaks will occur when an accidental handler loop is made. To combat this,
+make a weak reference to the handler or make it static

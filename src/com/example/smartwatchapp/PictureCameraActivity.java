@@ -66,8 +66,13 @@ public class PictureCameraActivity extends CameraSurfaceActivity{
 	@Override
 	public void onClick(View v) {
 		super.onClick(v);
-		log("Taking Picture");
-		takePicture();
+		if (v.getId() == R.id.ibCamera) {
+			finish();
+			startActivity(new Intent(this, VideoCameraActivity.class).putExtra("isVideo", true));
+		} else {
+			log("Taking Picture");
+			takePicture();
+		}
 	}
 	
 	public void takePicture() {
@@ -87,11 +92,13 @@ public class PictureCameraActivity extends CameraSurfaceActivity{
 				isFirstClick = false;
 			}
 			else {
-				startActivityForResult(new Intent(PictureCameraActivity.this, FinishedActivity.class)
-					.putExtra("first file", Uri.fromFile(firstPic))
-					.putExtra("second file", Uri.fromFile(secondPic))
-					.putExtra("identifier", "picture")
-					, FinishedActivity.MEDIA_TYPE_IMAGE);
+				Intent intent = new Intent(PictureCameraActivity.this, SoundRecordActivity.class);
+				
+				intent.putExtra("first file", Uri.fromFile(firstPic))
+						.putExtra("second file", Uri.fromFile(secondPic))
+						.putExtra("identifier", "picture");
+
+				startActivityForResult(new Intent(PictureCameraActivity.this, SoundRecordActivity.class), CameraSurfaceActivity.MEDIA_TYPE_AUDIO);
 				isFirstClick = true;
 			}
 		}
@@ -113,8 +120,12 @@ public class PictureCameraActivity extends CameraSurfaceActivity{
 	
 	@Override
 	public void onBackPressed() {
-		super.onBackPressed();
-		isFirstClick = true;
+		if (!isFirstClick) {
+			finish();
+			startActivity(new Intent(this, VideoCameraActivity.class).putExtra("isVideo", true));
+		} else {
+			isFirstClick = true;
+		}
 	}
 	
 	@Override
@@ -122,23 +133,13 @@ public class PictureCameraActivity extends CameraSurfaceActivity{
 		super.onActivityResult(requestCode, resultCode, data);
 		log("in onActivityresult");
 		
-		if(resultCode == RESULT_OK && data != null) {
-			if(requestCode == FinishedActivity.MEDIA_TYPE_IMAGE) {
-				if(data.getStringExtra("response").equals("yes")) {
-					log("response was yes");
-					
-					startActivity(new Intent(this, SoundRecordActivity.class)
-						.putExtra("before after", beforeAfter));
-					
-				}
-				if(data.getStringExtra("response").equals("no")) {
-					log("response was no");
-					isFirstClick = true;
-				}
+		if(resultCode == RESULT_OK) {
+			if(requestCode == CameraSurfaceActivity.MEDIA_TYPE_AUDIO) {
 			}
 		}
 		else {
 			log("result cancelled");
+			isFirstClick = true;
 		}
 		
 	}

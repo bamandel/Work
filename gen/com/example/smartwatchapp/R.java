@@ -27,42 +27,41 @@ public final class R {
     public static final class drawable {
         public static final int box_outline_2_transparent=0x7f020000;
         public static final int box_outline_transparent=0x7f020001;
-        public static final int crosshair_transparent=0x7f020002;
-        public static final int ic_launcher=0x7f020003;
-        public static final int orange_dot=0x7f020004;
-        public static final int record=0x7f020005;
-        public static final int record_pressed=0x7f020006;
-        public static final int red_dot=0x7f020007;
-        public static final int yellow_dot=0x7f020008;
+        public static final int camera_transparent=0x7f020002;
+        public static final int crosshair_transparent=0x7f020003;
+        public static final int ic_launcher=0x7f020004;
+        public static final int orange_dot=0x7f020005;
+        public static final int record=0x7f020006;
+        public static final int record_pressed=0x7f020007;
+        public static final int red_dot=0x7f020008;
+        public static final int video_transparent=0x7f020009;
+        public static final int yellow_dot=0x7f02000a;
     }
     public static final class id {
-        public static final int action_settings=0x7f080010;
+        public static final int action_settings=0x7f08000f;
         public static final int container=0x7f080001;
-        public static final int etPhrase=0x7f08000e;
         public static final int flCameraLayout=0x7f080002;
         public static final int flVideoPerimeter=0x7f080000;
+        public static final int ibCamera=0x7f080007;
         public static final int ivCrosshair=0x7f080005;
         public static final int ivDot=0x7f080004;
-        public static final int ivRecord=0x7f08000b;
-        public static final int pbTimer=0x7f08000c;
+        public static final int ivRecord=0x7f08000c;
+        public static final int pbTimer=0x7f080006;
         public static final int svVideoView=0x7f080003;
-        public static final int tvFinished=0x7f080006;
-        public static final int tvNext=0x7f08000d;
-        public static final int tvNo=0x7f080008;
-        public static final int tvPicBefore=0x7f080009;
-        public static final int tvTime=0x7f08000f;
-        public static final int tvVidAfter=0x7f08000a;
-        public static final int tvYes=0x7f080007;
+        public static final int tvFinish=0x7f08000e;
+        public static final int tvFinished=0x7f080009;
+        public static final int tvNo=0x7f08000b;
+        public static final int tvTime=0x7f08000d;
+        public static final int tvVideoTime=0x7f080008;
+        public static final int tvYes=0x7f08000a;
     }
     public static final class layout {
         public static final int activity_camera_surface=0x7f030000;
         public static final int activity_finished=0x7f030001;
-        public static final int activity_pic_vid=0x7f030002;
-        public static final int activity_sound_record=0x7f030003;
-        public static final int fragment_camera_surface=0x7f030004;
-        public static final int fragment_finished=0x7f030005;
-        public static final int fragment_pic_vid=0x7f030006;
-        public static final int fragment_sound_record=0x7f030007;
+        public static final int activity_sound_record=0x7f030002;
+        public static final int fragment_camera_surface=0x7f030003;
+        public static final int fragment_finished=0x7f030004;
+        public static final int fragment_sound_record=0x7f030005;
     }
     public static final class menu {
         public static final int camera_surface=0x7f070000;
@@ -77,10 +76,13 @@ public final class R {
         public static final int after_question=0x7f050007;
         public static final int app_name=0x7f050000;
         public static final int before_question=0x7f050006;
+        public static final int crosshair_description=0x7f050011;
+        public static final int dot_description=0x7f050013;
         public static final int finished_question=0x7f05000a;
         public static final int hello_world=0x7f050002;
         public static final int no_answer=0x7f050009;
         public static final int pic_question=0x7f050004;
+        public static final int timer_time=0x7f050014;
         public static final int title_activity_blelist=0x7f050010;
         public static final int title_activity_camera_surface=0x7f05000e;
         public static final int title_activity_finished=0x7f05000d;
@@ -89,6 +91,7 @@ public final class R {
         public static final int title_activity_sound_record=0x7f05000f;
         public static final int title_activity_video_camera=0x7f05000b;
         public static final int vid_question=0x7f050005;
+        public static final int video_picture_description=0x7f050012;
         public static final int yes_answer=0x7f050008;
     }
     public static final class style {
@@ -118,5 +121,6 @@ public final class R {
  All customizations that are NOT specific to a particular API-level can go here. 
          */
         public static final int AppTheme=0x7f060001;
+        public static final int noAnimTheme=0x7f060002;
     }
 }

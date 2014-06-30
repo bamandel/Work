@@ -18,5 +18,9 @@
     <string name="title_activity_camera_surface">CameraSurfaceActivity</string>
     <string name="title_activity_sound_record">SoundRecordActivity</string>
     <string name="title_activity_blelist">BLEListActivity</string>
+    <string name="crosshair_description">crosshair</string>
+    <string name="video_picture_description">video/picture button</string>
+    <string name="dot_description">dot</string>
+    <string name="timer_time">0/15</string>
 
 </resources>
